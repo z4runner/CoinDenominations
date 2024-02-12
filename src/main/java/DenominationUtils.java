@@ -9,7 +9,8 @@ import java.util.List;
 /****************************************************************************************************/
 //  Author  :  Mike Kronick
 //  Date    :  02/12/2024
-//  Copyright: 02/12/2024,  All rights reserved
+//  Copyright © 02/12/2024,  All rights reserved
+//  Revision 1.0
 //
 //  Synopsis:
 //      The following java code is used to calculate the minimum number of required coins and the
