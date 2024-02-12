@@ -5,8 +5,8 @@ import lombok.*;
 import java.io.Serializable;
 
 /*
- * Represents the denominations and quantities making a given amount
- * Example: A 95 cents is comprised of Qty 1 50c, Qty 1 25c, and Qty 2 10c
+ * Represents the coin denominations and quantities for a given amount
+ * Example: 95 cents is comprised of Qty 1 50c, Qty 1 25c, and Qty 2 10c
  */
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,11 +15,11 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DenomBreakdown implements Serializable {
 
-    // The amount of the gift card
+    // Coin denomination
     @JsonProperty("Coin")
     private float coin;
 
-    // How many of this amount is needed
+    // Qty of coins needed
     @JsonProperty("quantity")
     private long quantity;
 

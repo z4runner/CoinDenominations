@@ -6,11 +6,27 @@ import java.util.List;
 
 //@Slf4j
 
+/****************************************************************************************************/
+//  Author  :  Mike Kronick
+//  Date    :  02/12/2024
+//  Copyright: 02/12/2024,  All rights reserved
+//
+//  Synopsis:
+//      The following java code is used to calculate the minimum number of required coins and the
+//      coin values for any given amount.  This code was written as a non-recursive algorithm in
+//      order to more easily understand and maintain the code.  The algorithm uses a minimal amount of
+//      memory and time execution resources as opposed to a recursive implementation.
+/****************************************************************************************************/
+
+
 public class DenominationUtils {
 
     public static void main(String[] args){
 
-        //long[] denomArray = {100, 50, 25, 10, 5};
+        // Test inputs if not passing in arguments
+        // Denom order is from highest value to lowest value
+        // long[] denomArray = {100, 50, 25, 10, 5, 1};
+        // float amount = 65;
 
         long[] denomArray = new long[args.length-1];
         Arrays.fill(denomArray,0);
@@ -22,19 +38,19 @@ public class DenominationUtils {
         }
         float amount = Float.parseFloat(args[0]);
 
-        // Copy string array of coin value arguments to denomArray
+        // Copy string array of available coin values to denomArray
         for ( int i = 1 ; i < args.length; i++) {
             denomArray[i-1] = Long.parseLong(args[i]);
         }
 
         solution = calculateFixedDenoms(amount,denomArray);
 
-        System.out.println("Coin denominations for amount $" + amount/100 + " are: ");
+        System.out.println("Coins for amount " + (int) amount + " are: ");
         System.out.println("Coins " + solution );
 
     }
 
-    // Minimum combination of coin values for given amount
+    // Find minimum combination of coin values for given input amount
     public static List<DenomBreakdown> calculateFixedDenoms(float floatAmount, long[] longDenoms) {
 
         List<DenomBreakdown> solution;
@@ -56,13 +72,13 @@ public class DenominationUtils {
     }
 
     // Minimum combinations of coin values for given amount
-    public static List<DenomBreakdown> calculateFixedDenomsMethod (int amount, int[] denoms) {
+    private static List<DenomBreakdown> calculateFixedDenomsMethod (int amount, int[] denoms) {
 
         List<DenomBreakdown> denomList = new ArrayList<>();
 
-        int amountCopy = amount;               // Working copy of amount
-        int[] quantities = new int[10];        // Up to 10 coin values allowed (make larger if needed)
-        int lengthOfDenoms = denoms.length;    // Number of coin values passed in through main
+        int amountCopy = amount;               // Make working copy of amount
+        int[] quantities = new int[10];        // Up to 10 coin values allowed (can make larger if needed)
+        int lengthOfDenoms = denoms.length;    // Number of coin values passed in through main args
         int i;                                 // loop counter
         int remainder = 0;                     // remainder after integer divide of amount/denom
 
@@ -72,7 +88,7 @@ public class DenominationUtils {
 
             if (remainder == 0) {                    // If the division has 0 remainder, we have a solution
                // Done if remainder = 0
-               break;
+               break;                                // Break our of loop if we have a solution
             }
             // If remainder > 0 and the amount is > (qty * denom value),
             // subtract the qty * denom value and repeat loop with next denom in the list
@@ -80,22 +96,19 @@ public class DenominationUtils {
               amountCopy = amountCopy - (quantities[i] * denoms[i]);
             }
         }
-        // Next Check for incomplete solutions:
+        // Next Check for an incomplete solutions:
         //   If the remainder > 0, then the solution was not fully evaluated.
         //   There are two possible causes for this:
-        //     1.  There is no solution possible given the available coin denominations.
-        //     2.  An incorrect solution was arrived at because the algorithm uses the largest available
-        //         denomination first to complete the order.  For example, an amount of 30 won't be
-        //         solved correctly if the available denominations are only 10, 25, 50.
-        //         The algorithm generates a result of 25 and a remainder of 5, however three 10's
-        //         should have been the correct result.
-        //
-        //  If amount/(smallest coin denomination) is divisible with a remainder of 0, there is a possible solution
-        //  else, there is no solution possible.
+        //     1.  There is no solution possible with the given available coin denominations.
+        //     2.  An bad solution was arrived at because the algorithm uses the largest available
+        //         denomination first to complete the solution.  For example, an amount of 30 won't be
+        //         solved correctly if the available denominations are only 50, 25, 10.
+        //         The algorithm will generate a result of 25 and a remainder of 5.  However there is a correct
+        //         solution of three 10's.
         //
         //  Pseudocode to resolve issue:
-        //  Start by subtracting the smallest denomination from the amount and rerun the algorithm
-        //  starting with the largest denomination.
+        //  Start by subtracting the smallest denomination from the start amount and rerun the algorithm
+        //  with the largest coin denomination first.
         //          amount = amount - smallest denom
         //          quantity of smallest denom = 1
         //          rerun algorithm to find solution starting with the highest denomination
@@ -120,7 +133,7 @@ public class DenominationUtils {
                 // Loop through all the possible denom values for a solution
                 for (i = 0; i < lengthOfDenoms; i++) {
 
-                    // Make sure to include the initial qty offset (1) for the smallest denom
+                    // Include the initial qty offset (1) for the smallest denom
                     if (i == lengthOfDenoms - 1) {
                         quantities[i] = quantities[i] + (amountCopy / denoms[i]);
                     }  else {
@@ -151,8 +164,9 @@ public class DenominationUtils {
             } while (remainder > 0);
         }
 
-        // Add up the calculated coin values and compare to the amount
+        // Add up the calculated coin values and compare to the starting amount
         // If the sum of the coins > amount, there was no solution possible for this combination
+        // Returns empty list when there is no solution.
         int calculatedCoins = 0;
         for (i = 0; i < lengthOfDenoms; i++){
             calculatedCoins += (quantities[i] * denoms[i]);
@@ -165,7 +179,7 @@ public class DenominationUtils {
                 // Populate the DenomBreakdown list with the results
                 for (i = 0; i < lengthOfDenoms; i++) {
                     if (quantities[i] > 0) {
-                        DenomBreakdown current = new DenomBreakdown((float) denoms[i] / 100, quantities[i]);
+                        DenomBreakdown current = new DenomBreakdown((float) denoms[i] , quantities[i]);
                         denomList.add(current);
                     }
                 }
