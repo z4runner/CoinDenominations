@@ -1,8 +1,6 @@
 //import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 //@Slf4j
 
@@ -62,10 +60,12 @@ public class DenominationUtils {
         int[] denominations = new int[longDenoms.length];
 
         // Loop through all longs and convert to int
+        // Put denoms in descending order
+        Arrays.sort(longDenoms);
         for(int i = 0; i < longDenoms.length; i++)
         {
-            // Cast to int and put it to the int array
-            denominations[i] = (int) longDenoms[i];
+            // Cast to int and put it to the int array in reverse order
+            denominations[i] = (int) longDenoms[longDenoms.length - i - 1];
         }
 
         solution = calculateFixedDenomsMethod(amount, denominations);
